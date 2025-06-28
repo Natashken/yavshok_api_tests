@@ -1,6 +1,7 @@
 import requests
 from dotenv import load_dotenv
 import os
+from utils.test_data_generators import generate_email, generate_password, generate_name, generate_age
 
 from urllib3 import response
 
@@ -28,9 +29,9 @@ def test_api_available():
 def test_api_registration():
     """Проверяем регистрацию пользователя"""
     registration_data = {
-        "email": API_USERNAME,
-        "password": API_PASSWORD,
-        "age": 25
+        "email": generate_email(),
+        "password": generate_password(),
+        "age": generate_age()
     }
     
     response = requests.post(
@@ -70,7 +71,6 @@ def test_api_login():
         "email": API_USERNAME,
         "password": API_PASSWORD
     }
-    print(authorisation_data)
     
     response = requests.post(
         f"{API_BASE_URL}/auth/login",
@@ -120,14 +120,13 @@ def test_api_exist():
     # Проверяем ответ
     assert response.status_code == 200
     body = response.json()
-    print(body)
     assert body["exist"] == True
 
 
 def test_api_name():
     """Смена имени для пользователя"""
     global AUTH_TOKEN
-    print(AUTH_TOKEN)
+    print(f"Current token: {AUTH_TOKEN}")
     
     if not AUTH_TOKEN:
         print("Token not available, skipping authenticated test")
@@ -139,23 +138,31 @@ def test_api_name():
     }
     
     name_data = {
-        "name": "Random_name"
+        "name": generate_name()
     }
     
-    response = requests.post(
-        f"{API_BASE_URL}/name",
-        json=name_data
+    print(f"Sending name data: {name_data}")
+    print(f"Headers: {headers}")
+    
+    response = requests.patch(
+        f"{API_BASE_URL}/user/name",
+        json=name_data,
+        headers=headers
     )
     
-    print(f"Authenticated request status: {response.status_code}")
+    print(f"Response status: {response.status_code}")
+    print(f"Response headers: {dict(response.headers)}")
+    
     if response.status_code == 200:
         body = response.json()
         print(f"Response body: {body}")
+    else:
+        print(f"Error response: {response.text}")
 
 def test_api_user():
     """Получение данных о пользователе"""
     global AUTH_TOKEN
-    print(AUTH_TOKEN)
+    print(f"Current token: {AUTH_TOKEN}")
     
     if not AUTH_TOKEN:
         print("Token not available, skipping authenticated test")
@@ -166,9 +173,14 @@ def test_api_user():
         "Content-Type": "application/json"
     }
     
-    response = requests.get(f"{API_BASE_URL}/user/me")
+    response = requests.get(
+        f"{API_BASE_URL}/user/me",
+        headers=headers
+    )
     
-    print(f"Authenticated request status: {response.status_code}")
+    print(f"Response status: {response.status_code}")
     if response.status_code == 200:
         body = response.json()
         print(f"Response body: {body}")
+    else:
+        print(f"Error response: {response.text}")
