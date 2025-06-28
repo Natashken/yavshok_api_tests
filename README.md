@@ -2,9 +2,13 @@
 
 Automated tests for [Yavshok REST API](https://api.yavshok.ru/swagger)
 
-## Installation
+## Установка
 
-1. Clone repository:
+1. Для клонирования репозитория:
    ```bash
    git clone https://github.com/your-username/yavshok_api_tests.git
    cd yavshok_api_tests
+
+2. Для запуска тестов:
+    ```bash
+    pytest tests/ -v
