@@ -11,4 +11,8 @@ Automated tests for [Yavshok REST API](https://api.yavshok.ru/swagger)
 
 2. Для запуска тестов:
     ```bash
-    pytest tests/ -v
+    pytest src/tests/ -v
+
+3. Для запуска тестов с выводом дополнительной информации:
+   ```bash
+   pytest src/tests/test_direct_requests.py -v -s
