@@ -7,9 +7,9 @@ class UserEndpoint:
         self._auth = AuthEndpoint(client)
 
     def change_name(self, new_name: str, email: str, password: str) -> dict[str, object]:
-
         auth_response = self._auth.login(email, password)
-        token = auth_response.get('token')
+        
+        token = auth_response['body']['token'] # type: ignore
         
         if not token:
             raise Exception("Failed to get authentication token")
@@ -19,9 +19,9 @@ class UserEndpoint:
         return self._client._make_request('PATCH', '/user/name', json=data, headers=headers)
 
     def get_current_user(self, email: str, password: str) -> dict[str, object]:
-
         auth_response = self._auth.login(email, password)
-        token = auth_response.get('token')
+        
+        token = auth_response['body']['token'] # type: ignore
         
         if not token:
             raise Exception("Failed to get authentication token")

@@ -14,8 +14,14 @@ class ApiClient:
             kwargs['headers'] = headers
         
         response = requests.request(method, url, **kwargs)
-        response.raise_for_status()
-        return response.json()
+        try:
+            body = response.json()
+        except Exception:
+            body = response.text
+        return {
+            "status_code": response.status_code,
+            "body": body
+        }
 
     def check_health(self) -> dict[str, object]:
         return self._make_request('GET', '/health')
